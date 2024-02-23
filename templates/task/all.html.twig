@@ -1,0 +1,285 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Tâches{% endblock %}
+
+{% block body %}
+    <section class="gradient-custom-2">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-md-12 col-xl-10">
+                    <div class="card mask-custom">
+                        <div class="card-body p-4 text-white">
+                            <div class="text-center pt-3 pb-2">
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp"
+                                     alt="Check" width="60">
+                                <h2 class="my-4">Liste des Tâches</h2>
+                            </div>
+                            <hr>
+                            <a href="{{ path('new_task') }}"><span class="text-white"><i class="fa fa-circle-plus"></i>Ajouter</span></a>
+                            <hr>
+                            <table class="table text-black-50 mb-0" id="my-table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Titre</th>
+                                    <th scope="col">Date création</th>
+                                    <th scope="col">Date modification</th>
+                                    <th scope="col">Statut</th>
+                                    <th scope="col">Responsable</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for task in tasks %}
+                                    <tr class="fw-normal">
+                                        <th>
+                                            <span>{{ task.titre }}</span>
+                                        </th>
+                                        <td class="align-middle">
+                                            <span>{{ task.createdAt |date }}</span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <span>{{ task.updatedAt |date }}</span>
+                                        </td>
+                                        <td class="align-middle">
+                                            {% set status = task.status %}
+                                            {% if status == 'En attente' %}
+                                                <h6 class="mb-0"><span class="badge bg-danger text-white">En attente</span></h6>
+                                            {% elseif status == 'En cours' %}
+                                                <h6 class="mb-0"><span class="badge bg-success text-white">En cours</span></h6>
+                                            {% elseif status == 'Terminée' %}
+                                                <h6 class="mb-0"><span class="badge bg-primary text-white">Terminée</span></h6>
+                                            {% else %}
+                                                <span>...</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="align-middle">
+                                            <img src="{{ task.user.avatar }}"
+                                                 alt="avatar 1" style="width: 45px; height: auto;">
+                                            <span class="ms-2">{{ task.user.name }}</span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <a href="#!" data-mdb-toggle="tooltip" title="View" data-toggle="modal" data-target="#showModal" data-titre="{{ task.titre }}" data-description="{{ task.description }}" data-exigences="{{ task.exigences }}" data-user="{{ task.user.name }}" data-status="{{ task.status }}" data-created="{{ task.createdAt |date }}" data-updated="{{ task.updatedAt |date }}"><i class="fas fa-eye fa-lg text-success me-3"></i></a>
+                                            <a href="#!" data-mdb-toggle="tooltip" title="Edit"><i class="fas fa-pencil fa-lg text-warning me-3" data-id="{{ task.id }}"></i></a>
+                                            <a href="#!" data-mdb-toggle="tooltip" title="Remove"><i class="fas fa-trash-alt fa-lg text-danger" data-id="{{ task.id }}"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal show-->
+    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="showModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="showModalLabel">Détail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Titre</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <span id="titre-show"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Description</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <p id="description-show"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Exigences</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <span id="exigences-show"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Statut</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <span id="status-show"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Responsable</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <span id="user-show"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Date de création</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <span id="created-show"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Date de modification</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <span id="updated-show"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="center bg-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:#fff;display:block;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                            <g transform="rotate(0 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.9166666666666666s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(30 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.8333333333333334s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(60 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.75s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(90 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.6666666666666666s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(120 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5833333333333334s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(150 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(180 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.4166666666666667s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(210 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.3333333333333333s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(240 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.25s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(270 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.16666666666666666s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(300 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.08333333333333333s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g><g transform="rotate(330 50 50)">
+                                <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#a371fe">
+                                    <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"></animate>
+                                </rect>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $( document ).ready(function() {
+            let table = new DataTable('#my-table', {
+                order: [],
+                "language": {
+                    "sEmptyTable": "Aucune donnée disponible dans le tableau",
+                    "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+                    "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+                    "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+                    "sInfoPostFix": "",
+                    "sInfoThousands": ",",
+                    "sLengthMenu": "Afficher _MENU_ tâches",
+                    "sLoadingRecords": "Chargement...",
+                    "sProcessing": "Traitement...",
+                    "sSearch": "Rechercher :",
+                    "sZeroRecords": "Aucun élément correspondant trouvé",
+                    "oPaginate": {
+                        "sFirst": "Premier",
+                        "sLast": "Dernier",
+                        "sNext": "Suivant",
+                        "sPrevious": "Précédent"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+                        "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+                    },
+                    "select": {
+                        "rows": {
+                            "_": "%d tâches sélectionnées",
+                            "0": "Aucune tache sélectionnée",
+                            "1": "1 tâche sélectionnée"
+                        }
+                    }
+                },
+            });
+
+            $('#showModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var modal = $(this);
+                modal.find('#titre-show').text(button.data('titre'));
+                modal.find('#description-show').text(button.data('description'));
+                modal.find('#exigences-show').text(button.data('exigences'));
+                modal.find('#user-show').text(button.data('user'));
+                modal.find('#status-show').text(button.data('status'));
+                modal.find('#created-show').text(button.data('created'));
+                modal.find('#updated-show').text(button.data('updated'));
+            })
+
+            $('.fa-pencil').on('click',function (){
+                var id = $(this).data('id');
+                $('#editModal').modal('show');
+                $.ajax('/task/'+id+'/edit',   // request url
+                    {
+                        success: function (data, status, xhr) {// success callback function
+                            $('#editModal').find('.modal-body').html(data);
+                        }
+                    });
+            });
+
+            $('.fa-trash-alt').on('click',function (){
+                var id = $(this).data('id');
+                if (confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
+                    fetch('/task/'+id+'/delete', {
+                        method: 'DELETE',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => {
+                        if (response.status === 204) {
+                            // Tâche supprimée avec succès, actualiser la page ou faire d'autres actions nécessaires
+                            window.location.reload(); // Actualiser la page
+                        } else {
+                            // Gérer les erreurs
+                            console.error('Une erreur est survenue lors de la suppression de la tâche.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

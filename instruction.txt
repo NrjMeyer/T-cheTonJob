@@ -1,0 +1,6 @@
+- Ce projet utilise la dernière version de symfony, assurez vous bien que vous utilisé Php 8
+- Faire un composer install
+- Bien configuerer votre base de donnée et lancer les migrations
+- Avant de lancer le projet, executer cette commande: php bin/console doctrine:fixtures:load
+Cela permet d'ajouter des utilisateurs
+- Vous pouvez faire des testes à present

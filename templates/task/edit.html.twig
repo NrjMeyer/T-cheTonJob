@@ -1,0 +1,45 @@
+ <div class="row d-flex justify-content-center align-items-center">
+    <div class="col-md-12 col-xl-12">
+      <div class="card mask-custom">
+        <div class="card-body p-4 text-white">
+          <div class="text-center pt-3 pb-2">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp"
+                 alt="Check" width="60">
+            <h2 class="my-4">Modifier</h2>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              {{ form_start(form,{'action': path('edit_task', {'id': task.id})}) }}
+              <div class="form-group">
+                {{ form_label(form.titre, 'Titre de la tâche') }}
+                {{ form_widget(form.titre, { 'attr': {'class': 'form-control'} }) }}
+                {{ form_errors(form.titre) }}
+              </div>
+              <div class="form-group">
+                {{ form_label(form.description, 'Description de la tâche') }}
+                {{ form_widget(form.description, { 'attr': {'class': 'form-control'} }) }}
+                {{ form_errors(form.description) }}
+              </div>
+              <div class="form-group">
+                {{ form_label(form.exigences, 'Exigences') }}
+                {{ form_widget(form.exigences, { 'attr': {'class': 'form-control'} }) }}
+                {{ form_errors(form.exigences) }}
+              </div>
+              <div class="form-group">
+                {{ form_label(form.status, 'Statut de la tâche') }}
+                {{ form_widget(form.status, { 'attr': {'class': 'form-control'} }) }}
+                {{ form_errors(form.status) }}
+              </div>
+              <div class="form-group">
+                {{ form_label(form.user, 'Responsable de la tâche') }}
+                {{ form_widget(form.user, { 'attr': {'class': 'form-control'} }) }}
+                {{ form_errors(form.user) }}
+              </div>
+              <button type="submit" class="btn btn-primary">Modifier</button>
+              {{ form_end(form) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
